@@ -1,0 +1,196 @@
+T1: 
+
+!apt-get install nmap -y
+
+import socket
+import time
+
+def port_scan(target_ip, start_port, end_port):
+    print(f"\nStarting Port Scan on {target_ip}")
+    open_ports = []
+    start_time = time.time()
+    
+    for port in range(start_port, end_port + 1):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)  # half-second timeout per port
+        
+        result = sock.connect_ex((target_ip, port))
+        if result == 0:
+            print(f"Port {port}: OPEN")
+            open_ports.append(port)
+        else:
+            print(f"Port {port}: CLOSED")
+        sock.close()
+    
+    end_time = time.time()
+    print(f"\nScan completed in {round(end_time - start_time, 2)} seconds")
+    
+    if open_ports:
+        print(f"Open Ports: {open_ports}")
+    else:
+        print("No open ports found.")
+
+target = input("Enter Target IP (e.g., 127.0.0.1 or scanme.nmap.org): ")
+start_port = int(input("Enter Start Port: "))
+end_port = int(input("Enter End Port: "))
+
+port_scan(target, start_port, end_port)
+
+
+Enter Target IP: scanme.nmap.org
+Enter Start Port: 20
+Enter End Port: 80
+
+Starting Port Scan on scanme.nmap.org
+Port 20: CLOSED
+Port 21: OPEN
+Port 22: OPEN
+Port 23: CLOSED
+Port 25: CLOSED
+...
+Scan completed in 5.8 seconds
+Open Ports: [21, 22]
+
+##############################################################
+
+T2:
+ 
+from datetime import datetime
+
+def log_user_input(filename="input_log.txt"):
+    print("Enter commands (type 'exit' to stop):")
+    with open(filename, "a") as logfile:
+        while True:
+            command = input("Command: ").strip()
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            if command.lower() == "exit":
+                print("\nExiting input collection...")
+                break
+            
+            logfile.write(f"{timestamp} - {command}\n")
+            print(f"Logged: [{timestamp}] {command}")
+    
+    print(f"\nAll commands have been saved to {filename}")
+
+def verify_log(filename="input_log.txt"):
+    print("\nVerifying log contents...\n")
+    with open(filename, "r") as logfile:
+        data = logfile.read()
+        print(data if data else "No commands found in log file.")
+log_user_input()
+verify_log()
+
+
+
+Sample Input
+Command: show status
+Command: ping 192.168.1.1
+Command: netstat
+Command: exit
+
+
+Enter commands (type 'exit' to stop):
+Command: show status
+Logged: [2025-11-13 11:45:22] show status
+Command: ping 192.168.1.1
+Logged: [2025-11-13 11:45:25] ping 192.168.1.1
+Command: netstat
+Logged: [2025-11-13 11:45:27] netstat
+Command: exit
+
+Exiting input collection...
+All commands have been saved to input_log.txt
+Verifying log contents...
+2025-11-13 11:45:22 - show status
+2025-11-13 11:45:25 - ping 192.168.1.1
+2025-11-13 11:45:27 - netstat
+
+######################################################################
+
+T4:
+
+!pip install pyotp
+
+
+
+import random
+
+password = "admin123"
+otp = random.randint(100000, 999999)
+print("Your OTP is:", otp)
+
+pwd = input("Enter password: ")
+user_otp = int(input("Enter OTP: "))
+
+if pwd == password and user_otp == otp:
+    print("Login successful")
+else:
+    print("Login failed")
+
+
+
+Sample Input
+Enter your password: cyber123
+Enter your OTP: 482191
+
+Expected Output (Example)
+Your Secret Key (store securely): S4DXYZGQH7NYYMZXKELFTE6LU2XHW6QZ
+Your current OTP: 482191 (valid for 30 seconds)
+
+--- User Login ---
+Enter your password: cyber123
+Enter your OTP: 482191
+Login Successful! Access Granted.
+
+Current OTP (for testing reference): 482191
+
+
+######################################################################
+
+
+T5: 
+
+
+def caesar_encrypt(text, shift):
+    result = ""
+    for char in text:
+        if char.isalpha(): 
+            base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            result += char 
+    return result
+
+def caesar_decrypt(cipher_text, shift):
+    return caesar_encrypt(cipher_text, -shift)
+
+plaintext = input("Enter the message to encrypt: ")
+shift = int(input("Enter shift value (e.g., 3): "))
+
+encrypted_text = caesar_encrypt(plaintext, shift)
+decrypted_text = caesar_decrypt(encrypted_text, shift)
+
+print("\n--- Results ---")
+print(f"Original Message : {plaintext}")
+print(f"Encrypted Message: {encrypted_text}")
+print(f"Decrypted Message: {decrypted_text}")
+
+if plaintext == decrypted_text:
+    print("\n Test Passed: Decrypted text matches the original message.")
+else:
+    print("\n Test Failed: Decrypted text does not match the original.")
+
+
+
+Enter the message to encrypt: Cyber Security 2025!
+Enter shift value (e.g., 3): 4
+
+--- Results ---
+Original Message : Cyber Security 2025!
+Encrypted Message: Gcfiv Wigyvxmxc 2025!
+Decrypted Message: Cyber Security 2025!
+
+Test Passed: Decrypted text matches the original message.
+
+
